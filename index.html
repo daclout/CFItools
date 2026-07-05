@@ -1,0 +1,68 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover, maximum-scale=1">
+<title>CFI Endorsements</title>
+<meta name="description" content="Determine which FAA logbook endorsements a pilot needs, from student solo through CFI/CFII, including SFAR 73 for Robinson R22/R44 helicopters.">
+<meta name="theme-color" content="#0a84ff">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="default">
+<meta name="apple-mobile-web-app-title" content="CFI Endorse">
+<link rel="stylesheet" href="styles.css">
+</head>
+<body>
+<div id="app">
+
+  <!-- Desktop left rail (hidden on mobile via CSS) -->
+  <nav class="desktop-rail">
+    <div class="rail-brand">🚁 CFI<br>Endorsements</div>
+    <div class="rail-tabs" id="rail-tabs"></div>
+  </nav>
+
+  <div class="main-column">
+    <header class="top-bar">
+      <div id="top-bar-title">Helicopter</div>
+    </header>
+
+    <main id="main-content"></main>
+
+    <!-- Mobile bottom tab bar (hidden on desktop via CSS) -->
+    <nav class="tab-bar" id="tab-bar"></nav>
+  </div>
+
+  <!-- Detail modal -->
+  <div id="modal-backdrop" class="modal-backdrop">
+    <div class="modal-sheet">
+      <div class="modal-sheet-header">
+        <button id="modal-close-btn" class="modal-close-btn" aria-label="Close">Close</button>
+      </div>
+      <div id="modal-sheet-body" class="modal-sheet-body"></div>
+    </div>
+  </div>
+
+</div>
+
+<script src="data.js"></script>
+<script src="app.js"></script>
+<script>
+  // Duplicate the tab bar markup into both the mobile tab bar and the
+  // desktop rail so app.js's single querySelectorAll binding covers both.
+  (function () {
+    var TABS = [
+      { key: "helicopter", label: "Helicopter", icon: "🚁" },
+      { key: "fixedwing", label: "Fixed Wing", icon: "✈️" },
+      { key: "library", label: "Library", icon: "📚" },
+      { key: "log", label: "My Log", icon: "🕘" },
+      { key: "about", label: "About", icon: "ℹ️" }
+    ];
+    function btnHtml(t) {
+      return '<button class="tab-btn" data-tab="' + t.key + '">' +
+        '<span class="tab-icon">' + t.icon + '</span><span>' + t.label + '</span></button>';
+    }
+    document.getElementById("tab-bar").innerHTML = TABS.map(btnHtml).join("");
+    document.getElementById("rail-tabs").innerHTML = TABS.map(btnHtml).join("");
+  })();
+</script>
+</body>
+</html>
