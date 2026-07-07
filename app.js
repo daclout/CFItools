@@ -434,12 +434,67 @@
     );
   }
 
+  function csvEscape(val) {
+    if (val == null) return "";
+    var s = String(val);
+    if (/["\r\n,]/.test(s)) {
+      s = '"' + s.replace(/"/g, '""') + '"';
+    }
+    return s;
+  }
+
+  function buildLogCsv() {
+    var header = ["Person/Pilot Name", "Endorsement ID", "Endorsement Title", "Citation", "Aircraft", "Date Issued", "Due Date", "Notes"];
+    var rows = [header];
+    LogStore.entries.forEach(function (entry) {
+      var endorsement = byId(entry.endorsementId);
+      var due = computeDueDate(entry);
+      rows.push([
+        entry.personName,
+        entry.endorsementId,
+        endorsement ? endorsement.title : "",
+        endorsement ? endorsement.citation : "",
+        entry.aircraft || "",
+        formatDate(new Date(entry.dateIssued)),
+        due ? formatDate(due) : "",
+        entry.notes || ""
+      ]);
+    });
+    return rows.map(function (row) { return row.map(csvEscape).join(","); }).join("\r\n");
+  }
+
+  function exportLogCsv() {
+    var csv = buildLogCsv();
+    if (typeof Blob === "undefined" || typeof URL === "undefined" || typeof URL.createObjectURL !== "function") {
+      // Extremely old/unsupported browser -- fall back to a data: URI so the
+      // download still works rather than silently doing nothing.
+      var dataUri = "data:text/csv;charset=utf-8," + encodeURIComponent(csv);
+      window.open(dataUri);
+      return;
+    }
+    var blob = new Blob([csv], { type: "text/csv;charset=utf-8;" });
+    var url = URL.createObjectURL(blob);
+    var a = document.createElement("a");
+    var today = new Date().toISOString().slice(0, 10);
+    a.href = url;
+    a.download = "cfi-endorsement-log-" + today + ".csv";
+    document.body.appendChild(a);
+    a.click();
+    document.body.removeChild(a);
+    URL.revokeObjectURL(url);
+  }
+
   function renderLog() {
     var upcoming = LogStore.entries.filter(function (e) { return computeDueDate(e) !== null; })
       .slice()
       .sort(function (a, b) { return computeDueDate(a) - computeDueDate(b); });
 
     var html = "";
+    html += '<div class="control-bar" style="justify-content: space-between;">';
+    html += '<button class="btn-secondary" id="log-back-btn">&larr; Back to Helicopter</button>';
+    html += '<button class="btn-secondary" id="log-export-btn"' + (LogStore.entries.length ? "" : " disabled") + '>Export Log (CSV)</button>';
+    html += "</div>";
+
     if (upcoming.length) {
       html += '<div class="section"><div class="section-header">Coming Due</div>' +
         upcoming.map(logEntryHtml).join("") + "</div>";
@@ -462,6 +517,21 @@
         renderApp();
       });
     });
+
+    var backBtn = root.querySelector("#log-back-btn");
+    if (backBtn) {
+      backBtn.addEventListener("click", function () {
+        state.tab = "helicopter";
+        renderApp();
+      });
+    }
+
+    var exportBtn = root.querySelector("#log-export-btn");
+    if (exportBtn) {
+      exportBtn.addEventListener("click", function () {
+        if (LogStore.entries.length) exportLogCsv();
+      });
+    }
   }
 
   // ---------------------------------------------------------------------
@@ -747,6 +817,7 @@
     LogStore: LogStore,
     computeDueDate: computeDueDate,
     sfarApplicableIds: sfarApplicableIds,
-    byId: byId
+    byId: byId,
+    buildLogCsv: buildLogCsv
   };
 })();
