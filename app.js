@@ -237,6 +237,17 @@
 
     html += '<div class="card-list">' + applicable.map(rowHtml).join("") + "</div>";
 
+    if (state.sfar.role === "student") {
+      var studentPicId = state.sfar.model === "r22" ? "A.58" : "A.62";
+      var studentParagraph = state.sfar.model === "r22" ? "1" : "2";
+      html += '<div class="callout" style="margin-top:12px;"><h3>What\'s Next</h3>' +
+        "<p><strong>The solo endorsement above doesn't carry over.</strong> Once this student earns a " +
+        "rotorcraft category and helicopter class rating, they'll need a separate SFAR 73 PIC " +
+        "endorsement -- " + studentPicId + " for the " + (state.sfar.model === "r22" ? "Robinson R22" : "Robinson R44") +
+        " -- before acting as pilot in command. It's a different requirement under § 2(b)(" + studentParagraph +
+        ")(ii), not an extension of today's solo endorsement.</p></div>";
+    }
+
     if (state.sfar.role === "ratedLowTime") {
       html += '<div class="callout" style="margin-top:12px;"><h3>12-Month Provisional Window</h3>' +
         "<p>A pilot who qualifies via the 10-hour add-on training pathway (rather than 200 total / " +
