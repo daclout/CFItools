@@ -121,7 +121,8 @@
     sfar: { model: "r22", role: "student" },
     library: { search: "", track: "" },
     modalEndorsementId: null,
-    logFormEndorsementId: null // set when "Log This Endorsement" opened the inline form
+    logFormEndorsementId: null, // set when "Log This Endorsement" opened the inline form
+    expandedRatingId: null // which rating card is expanded in "Certification Requirements"
   };
 
   var SFAR_ROLES = [
@@ -245,13 +246,59 @@
     }
     html += "</div>"; // end SFAR 73 section
 
+    html += renderRatingRequirementsSection();
     html += sectionHtml("Standard Helicopter Endorsements", standard);
     html += groupedGeneralSections();
 
     return html;
   }
 
+  function ratingCardHtml(r) {
+    var expanded = state.expandedRatingId === r.id;
+    var html = '<div class="rating-card">';
+    html += '<div class="rating-card-header" data-toggle-rating="' + r.id + '">';
+    html += '<div class="rating-card-title-row">';
+    html += '<div class="rating-card-name">' + escapeHtml(r.ratingName) + "</div>";
+    html += '<div class="rating-card-chevron">' + (expanded ? "&#9660;" : "&#9654;") + "</div>";
+    html += "</div>";
+    html += '<div class="rating-card-citation">' + escapeHtml(r.citation) + "</div>";
+    html += '<div class="rating-card-hours">' + escapeHtml(r.totalHoursLabel) + "</div>";
+    html += "</div>";
+    if (expanded) {
+      html += '<div class="rating-card-body">';
+      html += "<ul>" + r.breakdown.map(function (item) {
+        return "<li>" + escapeHtml(item) + "</li>";
+      }).join("") + "</ul>";
+      if (r.notes) {
+        html += '<div class="rating-card-notes">' + escapeHtml(r.notes) + "</div>";
+      }
+      html += "</div>";
+    }
+    html += "</div>";
+    return html;
+  }
+
+  function renderRatingRequirementsSection() {
+    var html = '<div class="section"><div class="section-header">Certification Requirements</div>';
+    html += '<div class="callout"><p>FAR Part 61 aeronautical experience (hour) requirements for each ' +
+      "helicopter rating. Tap a rating to see the full breakdown.</p></div>";
+    html += '<div class="rating-card-list">' + RATING_REQUIREMENTS.map(ratingCardHtml).join("") + "</div>";
+    html += "</div>";
+    return html;
+  }
+
+  function bindRatingRequirementsEvents(root) {
+    root.querySelectorAll("[data-toggle-rating]").forEach(function (header) {
+      header.addEventListener("click", function () {
+        var id = header.getAttribute("data-toggle-rating");
+        state.expandedRatingId = (state.expandedRatingId === id) ? null : id;
+        renderApp();
+      });
+    });
+  }
+
   function bindHelicopterEvents(root) {
+    bindRatingRequirementsEvents(root);
     var toggle = root.querySelector("#sfar-model-toggle");
     if (toggle) {
       toggle.querySelectorAll("button").forEach(function (btn) {
@@ -416,10 +463,10 @@
       "<p>CFI Endorsements helps flight instructors quickly determine which FAA logbook " +
       "endorsements a student or pilot needs -- from first solo through CFI/CFII -- and shows " +
       "the actual wording to write in the logbook. The Helicopter tab covers SFAR 73 for " +
-      "Robinson R22/R44 helicopters as a nested subcategory, plus standard helicopter " +
-      "endorsements like night vision goggles. The Fixed Wing tab covers complex, " +
-      "high-performance, high-altitude, tailwheel, spin training, and enhanced flight vision " +
-      "system endorsements.</p></div>" +
+      "Robinson R22/R44 helicopters as a nested subcategory, FAR Part 61 hour requirements " +
+      "for each helicopter rating, plus standard helicopter endorsements like night vision " +
+      "goggles. The Fixed Wing tab covers complex, high-performance, high-altitude, " +
+      "tailwheel, spin training, and enhanced flight vision system endorsements.</p></div>" +
 
       '<div class="section"><div class="section-header">Sources</div><div class="card-list">' +
         '<div class="about-list-item">📄 14 CFR Part 61 (eCFR)</div>' +

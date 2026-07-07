@@ -1260,3 +1260,80 @@ var ENDORSEMENT_DATA = [
 var CATEGORY_ORDER = ["studentSolo", "knowledge", "flightReview", "aircraft", "catClassType", "sfar73", "nvg", "efvs", "cfiCert", "other"];
 var CATEGORY_DISPLAY = {"studentSolo": "Student Solo", "knowledge": "Knowledge & Practical Test", "flightReview": "Flight Review & Currency", "aircraft": "Additional Aircraft (§ 61.31)", "catClassType": "Category / Class / Type", "sfar73": "SFAR 73 — Robinson R22/R44", "nvg": "Night Vision Goggles (§ 61.31(k))", "efvs": "Enhanced Flight Vision System (§ 61.66)", "cfiCert": "CFI Certification", "other": "Other"};
 var TRACK_DISPLAY = {"heli": "Helicopter", "fixed": "Fixed Wing", "general": "General (Any Category)"};
+
+var RATING_REQUIREMENTS = [
+  {
+    "id": "private-helicopter",
+    "ratingName": "Private Pilot — Helicopter",
+    "citation": "14 CFR § 61.109(c)",
+    "totalHoursLabel": "40 hours total flight time",
+    "breakdown": [
+      "At least 20 hours of flight training from an authorized instructor",
+      "At least 10 hours of solo flight training",
+      "3 hours of cross-country flight training in a helicopter",
+      "3 hours of night flight training in a helicopter, including one cross-country flight of over 50 NM total distance and 10 takeoffs/landings to a full stop (unless the § 61.110 night-training exception applies)",
+      "3 hours of flight training with an authorized instructor in preparation for the practical test, performed within the preceding 2 calendar months",
+      "10 hours of solo flight time in a helicopter, including: 3 hours of cross-country time; one solo cross-country flight of 100 NM total distance with landings at 3 points (one segment more than 25 NM straight-line); and 3 takeoffs/landings to a full stop at an airport with an operating control tower"
+    ],
+    "notes": "No instrument training is required for the helicopter private pilot certificate (unlike the airplane and powered-lift tracks)."
+  },
+  {
+    "id": "commercial-helicopter",
+    "ratingName": "Commercial Pilot — Helicopter",
+    "citation": "14 CFR § 61.129(c)",
+    "totalHoursLabel": "150 hours total flight time as a pilot",
+    "breakdown": [
+      "100 hours in powered aircraft, of which 50 hours must be in helicopters",
+      "100 hours of pilot-in-command time, including at least 35 hours in helicopters and 10 hours of cross-country time in helicopters",
+      "20 hours of training on the required areas of operation, including: 5 hours of instrument training (control/maneuvering solely by reference to instruments, using a view-limiting device); one 2-hour daytime cross-country flight over 50 NM; one 2-hour nighttime cross-country flight over 50 NM; and 3 hours with an instructor preparing for the practical test within the preceding 2 calendar months",
+      "10 hours of solo flight time in a helicopter, or time performing PIC duties with an instructor aboard, including: one cross-country flight with landings at a minimum of 3 points (one segment at least 50 NM); and 5 hours of night VFR time with 10 takeoffs/landings"
+    ],
+    "notes": "A maximum of 25 hours (50 hours if completed in a Part 142 course) of full flight simulator/flight training device time may be credited toward the total."
+  },
+  {
+    "id": "instrument-helicopter",
+    "ratingName": "Instrument Rating — Helicopter",
+    "citation": "14 CFR § 61.65(a), (e)",
+    "totalHoursLabel": "No separate FAA-specified total — experience below is layered on top of the private pilot certificate's hours",
+    "breakdown": [
+      "Must hold (or be concurrently applying for) a private pilot certificate with a helicopter rating",
+      "50 hours of cross-country time as pilot in command, of which 10 hours must be in a helicopter (an applicant for a combined private + instrument certificate may credit up to 47 of the 50 hours as cross-country PIC-duty time performed with an authorized instructor)",
+      "40 hours of actual or simulated instrument time in the required areas of operation, of which 15 hours must be received from an authorized instructor who holds an instrument-helicopter rating",
+      "3 hours of instrument flight training from an authorized instructor in a helicopter, within the 2 calendar months before the practical test",
+      "Instrument cross-country flight training, including one flight in a helicopter with an authorized instructor conducted under IFR with a filed flight plan: a flight of 100 NM along airways or by directed routing, an instrument approach at each airport, and 3 different kinds of approaches using navigation systems"
+    ],
+    "notes": "No fixed total-flight-hour figure is specified by the regulation itself -- these hours accumulate on top of whatever it took to earn the private pilot certificate."
+  },
+  {
+    "id": "cfi-helicopter",
+    "ratingName": "Flight Instructor — Helicopter (CFI)",
+    "citation": "14 CFR § 61.183",
+    "totalHoursLabel": "No FAA-specified total beyond the underlying commercial certificate — at least 15 hours must be logged as PIC in helicopters",
+    "breakdown": [
+      "Must be at least 18 years old",
+      "Must hold a commercial pilot certificate (or ATP) with a helicopter category and class rating — an instrument rating is NOT required for a helicopter-only flight instructor certificate, unlike the airplane single-engine, airplane multiengine, and powered-lift instructor ratings",
+      "Logbook endorsement on the fundamentals of instructing (§ 61.185(a)(1))",
+      "Pass a knowledge test on the fundamentals of instructing, unless exempt (existing CFI/ground instructor certificate, qualifying teaching credential, or college/university teaching position)",
+      "Pass a knowledge test on the aeronautical knowledge areas appropriate to the helicopter flight instructor rating",
+      "Logbook endorsement on the areas of operation in § 61.187(b) appropriate to the helicopter rating",
+      "Log at least 15 hours as pilot in command in the helicopter category and class",
+      "Pass the required practical test in a helicopter"
+    ],
+    "notes": "Many flight schools and insurers require substantially more total flight time (commonly 200+ hours) before hiring or insuring a new CFI -- that is a school/insurance policy, not an FAA regulatory requirement."
+  },
+  {
+    "id": "cfii-helicopter",
+    "ratingName": "CFII — Helicopter (Instrument Flight Instructor)",
+    "citation": "14 CFR § 61.183(c)(2)(iv), § 61.185, § 61.187",
+    "totalHoursLabel": "Same 15-hour PIC-in-helicopter baseline as the base CFI — no separate FAA hour total for the instrument add-on",
+    "breakdown": [
+      "Must hold a commercial pilot certificate (or ATP) with a helicopter rating AND an instrument-helicopter rating",
+      "Logbook endorsement on the fundamentals of instructing, if not already held from an existing CFI certificate",
+      "Pass a knowledge test on the aeronautical knowledge areas appropriate to the instrument flight instructor rating",
+      "Logbook endorsement on the instrument areas of operation in § 61.187(b)",
+      "Log at least 15 hours as pilot in command in helicopters (the same base § 61.183(j) requirement as the CFI rating -- typically already satisfied once a helicopter CFI)",
+      "Pass the required practical test on the instrument instructional areas of operation"
+    ],
+    "notes": "CFII is usually added onto an existing helicopter CFI certificate rather than pursued as a person's first flight instructor rating."
+  }
+];
